@@ -63,11 +63,22 @@ jobs:
         run: bash ci/push-docker.sh
   Snyk:
     runs-on: ubuntu-latest
+    container: gradle:6-jdk11
     env:
       SNYK_TOKEN: ${{ secrets.SNYK_API }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: snyk/actions/setup@master
+      - name: Download code
+        uses: actions/download-artifact@v4
+        with:
+          name: code
+          path: .
+      - name: Remove gradlew to force Snyk to use system Gradle
+        run: rm -f app/gradlew app/gradlew.bat
+      - name: Install Snyk CLI
+        run: |
+          curl -Lo snyk https://static.snyk.io/cli/latest/snyk-linux
+          chmod +x snyk
+          mv snyk /usr/local/bin/
       - name: Snyk dependency scan
         run: snyk test --all-projects --include-ignores 
   Component-test:
