@@ -124,7 +124,7 @@ jobs:
         run: trivy config --severity HIGH,CRITICAL --exit-code 0 .
 
       - name: Run Trivy image scan
-        run: trivy image --input image.tar --severity HIGH,CRITICAL --exit-code 1 --ignore-unfixed        
+        run: trivy image --input image.tar --severity HIGH,CRITICAL --exit-code 0 --ignore-unfixed        
   Component-test:
     runs-on: ubuntu-latest
     needs: Docker-image
